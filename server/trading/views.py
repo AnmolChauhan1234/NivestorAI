@@ -57,3 +57,45 @@ class TradeHistoryAPI(APIView):
         ]
 
         return Response({"trades": data}, status=200)
+
+
+
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import Portfolio
+
+class PortfolioHoldingsAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        holdings = Portfolio.objects.filter(user=user)
+
+        data = [
+            {
+                "symbol": holding.stock.symbol,
+                "quantity": holding.quantity,
+                "average_price": holding.average_price,
+            }
+            for holding in holdings
+        ]
+
+        return Response({"holdings": data}, status=200)
+
+
+
+
+
+class PortfolioValueAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        holdings = Portfolio.objects.filter(user=user)
+        
+        total_value = sum(
+            holding.quantity * holding.stock.current_price for holding in holdings
+        )
+
+        return Response({"total_value": total_value}, status=200)
