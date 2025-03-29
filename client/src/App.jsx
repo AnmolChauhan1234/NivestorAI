@@ -9,7 +9,6 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import ProfileSetup from "./components/ProfileSetup";
 import Sidebar from "./components/Sidebar";
-import Footer from "./components/Footer";
 
 // New Pages
 import Briefing from "./Pages/Briefing";
@@ -17,6 +16,7 @@ import PostDayAnalysis from "./Pages/PostDayAnalysis";
 import Dashboard from "./Pages/Dashboard";
 import Watchlist from "./Pages/Watchlist";
 import Profile from "./Pages/Profile";
+import AIChatDashboard from "./components/AIChatDashboard";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -44,6 +44,14 @@ function App() {
 
               {/* Protected Routes */}
 
+              <Route
+                path="/aichat"
+                element={
+                  // <ProtectedRoute>
+                    <AIChatDashboard />
+                  // </ProtectedRoute>
+                }
+              />
               <Route
                 path="/profile"
                 element={

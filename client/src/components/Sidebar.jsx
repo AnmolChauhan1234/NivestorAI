@@ -11,6 +11,7 @@ import {
   FileText,
   ClipboardList,
   Heart,
+  MessageSquare
 } from "lucide-react";
 import { useContext, createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -104,6 +105,11 @@ export default function Sidebar({ children, onToggle }) {
                 icon={<LayoutDashboard size={20} />}
                 text="Dashboard"
                 to="/dashboard"
+              />
+              <SidebarItem
+                icon={<MessageSquare size={20} />} 
+                text="AiChat"
+                to="/aichat"
               />
               <SidebarItem
                 icon={<FileText size={20} />}

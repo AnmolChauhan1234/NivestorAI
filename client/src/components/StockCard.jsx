@@ -1,15 +1,25 @@
-export default function StockCard({ stock }) {
+import { Card, CardContent, Typography, Button } from "@mui/material";
+
+const StockCard = ({ stock, onClick }) => {
   return (
-    <div className="p-4 bg-white shadow-md rounded-lg border border-gray-200">
-      <h2 className="text-lg font-bold">{stock.symbol}</h2>
-      <p className="text-gray-600">Price: ${stock.price}</p>
-      <p
-        className={`font-medium ${
-          stock.change.startsWith("+") ? "text-green-500" : "text-red-500"
-        }`}
-      >
-        Change: {stock.change}
-      </p>
-    </div>
+    <Card
+      sx={{ cursor: "pointer", "&:hover": { boxShadow: 3 } }}
+      onClick={onClick}
+    >
+      <CardContent>
+        <Typography variant="h6" component="div">
+          {stock.symbol}
+        </Typography>
+        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+          {stock.name}
+        </Typography>
+        <Typography variant="h5">${stock.current_price}</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          Last updated: {new Date(stock.last_updated).toLocaleString()}
+        </Typography>
+      </CardContent>
+    </Card>
   );
-}
+};
+
+export default StockCard;
