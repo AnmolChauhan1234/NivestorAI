@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import MarketTrendAPI, ExecuteTradeAPI, TradeHistoryAPI
+from .views import ExecuteTradeAPI, TradeHistoryAPI
 
 urlpatterns = [
     path("trades/", ExecuteTradeAPI.as_view(), name="execute-trade"),

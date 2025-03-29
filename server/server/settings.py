@@ -45,6 +45,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -84,6 +85,7 @@ SIMPLE_JWT = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -192,3 +194,16 @@ AUTHENTICATION_BACKENDS = [
 
 
 AUTH_USER_MODEL = "user_auth.User"  # ✅ Correct
+
+
+
+
+CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins (only for development)
+
+# OR, allow only specific origins (Recommended for production)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # React frontend (local development)
+    "https://yourfrontend.com",  # Your production frontend
+]
+
+CORS_ALLOW_CREDENTIALS = True  # If using authentication (JWT, sessions, etc.)
