@@ -21,3 +21,4 @@ media
 
 # Frontend
 /client/node_modules
+/client/.env
