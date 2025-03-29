@@ -20,8 +20,8 @@ const SidebarContext = createContext();
 export default function Sidebar({ children, onToggle }) {
   const [expanded, setExpanded] = useState(true);
   const navigate = useNavigate();
-  // const token = localStorage.getItem("token");
-  let token = true;
+  const token = sessionStorage.getItem("token");
+  // let token = true;
   const userName = token ? "John Doe" : "";
   const initials = userName
     ? userName
@@ -37,6 +37,29 @@ export default function Sidebar({ children, onToggle }) {
     setExpanded((curr) => !curr);
     if (onToggle) onToggle(!expanded);
   };
+
+  const handleLogout = async () => {
+    //calling api
+    try {
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/logout`);
+
+      const data = await response.json();
+
+      if(response.ok){
+        sessionStorage.removeItem("token");
+        alert(data.message);
+        setTimeout( () => {
+          navigate("/login");
+        }, 2000);
+      } else {
+        alert('Could not logout');
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <>
@@ -104,10 +127,7 @@ export default function Sidebar({ children, onToggle }) {
                 <SidebarItem
                   icon={<LogOut size={20} />}
                   text="Logout"
-                  onClick={() => {
-                    localStorage.removeItem("token");
-                    navigate("/");
-                  }}
+                  onClick={handleLogout}
                 />
               ) : (
                 <SidebarItem icon={<LogIn size={20} />} text="Login" to="/" />
@@ -201,10 +221,7 @@ export default function Sidebar({ children, onToggle }) {
                   <SidebarItem
                     icon={<LogOut size={20} />}
                     text="Logout"
-                    onClick={() => {
-                      localStorage.removeItem("token");
-                      navigate("/");
-                    }}
+                    onClick={handleLogout}
                   />
                 ) : (
                   <SidebarItem icon={<LogIn size={20} />} text="Login" to="/" />

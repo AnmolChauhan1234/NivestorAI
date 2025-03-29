@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { TextField, Button, Typography } from "@mui/material";
+import { TextField, Button, Typography, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const FormContainer = styled("form")(({ theme }) => ({
@@ -19,11 +19,14 @@ const FormContainer = styled("form")(({ theme }) => ({
 
 function Signup() {
   const [formData, setFormData] = useState({
-    username: "",
+    full_name: "",
     email: "",
+    phone_number: "",
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -33,10 +36,43 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
+    setError(null);
+
+    try {
+      const response = await fetch("http://localhost:8000/api/auth/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          full_name: formData.full_name,
+          email: formData.email,
+          phone_number: formData.phone_number,
+          password: formData.password,
+          
+        }),
+        credentials: "include", // Important for cookies
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+            data.email?.[0] ||
+            data.password?.[0] ||
+            "Registration failed"
+        );
+      }
+
+      setSuccess(true);
+      // Redirect after 2 seconds
+      setTimeout(() => navigate("/"), 2000);
+    } catch (err) {
+      setError(err.message);
+    } finally {
       setIsLoading(false);
-      navigate("/");
-    }, 1000);
+    }
   };
 
   return (
@@ -46,13 +82,24 @@ function Signup() {
           Sign Up
         </Typography>
 
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+
+        {success && (
+          <Alert severity="success" sx={{ mb: 2 }}>
+            Registration successful! Redirecting...
+          </Alert>
+        )}
+
         <TextField
-          label="Username"
+          label="Full Name"
           type="text"
-          name="username"
-          value={formData.username}
+          name="full_name"
+          value={formData.full_name}
           onChange={handleChange}
-          placeholder="username ..."
           variant="outlined"
           fullWidth
           required
@@ -65,12 +112,28 @@ function Signup() {
         />
 
         <TextField
-          label="Email Id"
+          label="Email"
           type="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="email here ..."
+          variant="outlined"
+          fullWidth
+          required
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "&:hover fieldset": { borderColor: "#FFB300" },
+              "&.Mui-focused fieldset": { borderColor: "#FFB300" },
+            },
+          }}
+        />
+
+        <TextField
+          label="Phone Number"
+          type="tel"
+          name="phone_number"
+          value={formData.phone_number}
+          onChange={handleChange}
           variant="outlined"
           fullWidth
           required
@@ -88,7 +151,6 @@ function Signup() {
           name="password"
           value={formData.password}
           onChange={handleChange}
-          placeholder="password ..."
           variant="outlined"
           fullWidth
           required
@@ -106,9 +168,10 @@ function Signup() {
           disabled={isLoading}
           sx={{
             backgroundColor: isLoading ? "#FFB300" : "#3730a3",
-            "&:hover": { backgroundColor: "#c7d2fe", color: "#3730a3" },
+            "&:hover": { backgroundColor: "#4f46e5" },
             width: "80%",
             margin: "0 auto",
+            py: 1.5,
           }}
         >
           {isLoading ? "Signing up..." : "Sign Up"}
@@ -120,7 +183,7 @@ function Signup() {
           sx={{
             color: "#3730a3",
             cursor: "pointer",
-            "&:hover": { color: "#c7d2fe" },
+            "&:hover": { color: "#5b5fc7" },
           }}
           onClick={() => navigate("/")}
         >

@@ -19,6 +19,7 @@ const FormContainer = styled("form")(({ theme }) => ({
 
 function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -29,16 +30,34 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    const response = await fetch("http://localhost:8000/auth/login/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
+
+    //calling the api for response
+    const response = await fetch(
+      "http://localhost:8000/api/auth/login/", 
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      }
+    );
+
+    //getting response.
     const data = await response.json();
     setIsLoading(false);
-    if (data.key) {
-      localStorage.setItem("token", data.key);
-      navigate("/profile");
+    if (data.access_token) {
+      //set token to session storage
+      sessionStorage.setItem("token", data.access_token);
+      
+      //alert the message.
+      alert(data.message);
+
+       // Redirect after 2 seconds
+      setTimeout(() => navigate("/profile"), 2000);
+    } else{
+      alert("Invalid Credentails.");
     }
   };
 

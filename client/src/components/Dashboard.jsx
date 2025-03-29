@@ -31,9 +31,10 @@ function Dashboard() {
   const [message, setMessage] = useState("");
   const [chatResponse, setChatResponse] = useState("");
 
+  //ai here.
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch("http://localhost:8000/api/suggestions/", {
+    const token = sessionStorage.getItem("token");
+    fetch("http://localhost:8000/api/market/stocks/", {
       headers: { Authorization: `Token ${token}` },
     })
       .then((res) => res.json())
