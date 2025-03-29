@@ -7,11 +7,6 @@ from django.shortcuts import get_object_or_404
 from .models import Stock
 
 
-
-
-# Create your views here.
-
-
 class ListStocksAPI(APIView):
     permission_classes = [AllowAny]
 
@@ -31,9 +26,7 @@ class ListStocksAPI(APIView):
         return Response({"results": results}, status=200)
     
 
-
-
-
+    
 
 class StockDetailAPI(APIView):
     permission_classes = [AllowAny]
@@ -49,16 +42,6 @@ class StockDetailAPI(APIView):
         return Response(data, status=200)
 
     
-
-
-
-
-
-
-
-
-
-
 
 from rest_framework.views import APIView
 from rest_framework.response import Response

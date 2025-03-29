@@ -22,4 +22,8 @@ urlpatterns = [
     path('api/auth/', include('user_auth.urls')),
     path('api/market/', include('market.urls')),
     path('api/trading/', include('trading.urls')),
+    path('api/ai/', include('ai.urls')),
+    path('api/analysis/', include('analysis.urls')),
+    path('api/watchlist/', include('watchlist.urls')),
+    path('api/notifications/', include('notifications.urls')),
 ]
