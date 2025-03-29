@@ -11,7 +11,7 @@ import {
   FileText,
   ClipboardList,
   Heart,
-  MessageSquare
+  MessageSquare,
 } from "lucide-react";
 import { useContext, createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -42,25 +42,25 @@ export default function Sidebar({ children, onToggle }) {
   const handleLogout = async () => {
     //calling api
     try {
-
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/logout`);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/logout`
+      );
 
       const data = await response.json();
 
-      if(response.ok){
+      if (response.ok) {
         sessionStorage.removeItem("token");
         alert(data.message);
-        setTimeout( () => {
+        setTimeout(() => {
           navigate("/login");
         }, 2000);
       } else {
-        alert('Could not logout');
+        alert("Could not logout");
       }
-
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   return (
     <>
@@ -107,7 +107,7 @@ export default function Sidebar({ children, onToggle }) {
                 to="/dashboard"
               />
               <SidebarItem
-                icon={<MessageSquare size={20} />} 
+                icon={<MessageSquare size={20} />}
                 text="AiChat"
                 to="/aichat"
               />
@@ -202,6 +202,12 @@ export default function Sidebar({ children, onToggle }) {
                   icon={<LayoutDashboard size={20} />}
                   text="Dashboard"
                   to="/dashboard"
+                />
+
+                <SidebarItem
+                  icon={<MessageSquare size={20} />}
+                  text="AiChat"
+                  to="/aichat"
                 />
 
                 <SidebarItem
