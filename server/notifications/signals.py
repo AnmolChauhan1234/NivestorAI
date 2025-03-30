@@ -23,7 +23,7 @@ def create_stock_notification(sender, request, user, **kwargs):
     user_name = user.get_full_name().strip() if user.get_full_name() else user.username  # Fallback to username
 
     # Notification message
-    message = f"Good morning {user_name}, we think it's a great day to buy {', '.join(selected_stocks)} equity shares. Have a look at the charts!"
+    message = f"Good morning Alex, we think it's a great day to buy {', '.join(selected_stocks)} equity shares. Have a look at the charts!"
 
     try:
         # Create and save notification
