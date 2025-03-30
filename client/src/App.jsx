@@ -33,10 +33,8 @@ function App() {
     <Router>
       <div className="flex flex-col min-h-screen bg-background">
         <div className="flex">
-          {/* Sidebar only visible when authenticated */}
-          {sessionStorage.getItem("token") && (
-            <Sidebar onToggle={setSidebarExpanded} />
-          )}
+          
+          <Sidebar onToggle={setSidebarExpanded} />
 
           <div
             className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ${

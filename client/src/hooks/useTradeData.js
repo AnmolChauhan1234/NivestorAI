@@ -8,7 +8,7 @@ export function useTradeData() {
   useEffect(() => {
     async function fetchTrades() {
       try {
-        const res = await fetch(`${API_BASE_URL}/trades/history/`);
+        const res = await fetch(`${import.meta.env.API_BASE_URL}/trades/history/`);
         const data = await res.json();
         setTrades(data.trades);
       } catch (error) {

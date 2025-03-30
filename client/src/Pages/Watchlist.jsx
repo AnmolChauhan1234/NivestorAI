@@ -54,7 +54,7 @@ const Watchlist = () => {
       } catch (err) {
         setError(err.message);
       } finally {
-        setLoading({ ...prev , watchlist: false});
+        setLoading({watchlist: false});
       }
     };
 

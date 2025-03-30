@@ -9,7 +9,7 @@ export function useStockData() {
   useEffect(() => {
     async function fetchStocks() {
       try {
-        const res = await fetch(`${API_BASE_URL}/stocks/`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/market/stocks/`);
         const data = await res.json();
         setStocks(data.stocks);
       } catch (error) {
