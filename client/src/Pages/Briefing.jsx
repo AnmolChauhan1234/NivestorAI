@@ -39,7 +39,7 @@ export default function Briefing() {
           }
         );
         const data = await response.json();
-        console.log("notification",data.notifications)
+        // console.log("notification",data.notifications)
         setNotifications(data.notifications || []); // Default to empty array if undefined
       } catch (error) {
         console.error("Error fetching notifications:", error);
@@ -60,7 +60,7 @@ export default function Briefing() {
     try {
       const token = sessionStorage.getItem("token");
       await fetch(
-        `${import.meta.env.VITE_API_URL}/api/notifications/mark-read/`,
+        `${import.meta.env.VITE_API_URL}/notifications/read/`,
         {
           method: "POST",
           headers: {
@@ -128,6 +128,7 @@ export default function Briefing() {
                       ? "inherit"
                       : "#f5f5f5",
                   }}
+                  className="cursor-pointer"
                 >
                   <ListItemText
                     primary={notification.message}
