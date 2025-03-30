@@ -39,7 +39,52 @@ function Signup() {
 
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
+    setError(null);
+
+    try {
+      const response = await fetch(
+
+        `${import.meta.env.VITE_API_URL}/auth/register/`, 
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            full_name: formData.full_name,
+            email: formData.email,
+            phone_number: formData.phone_number,
+            password: formData.password,
+            
+          }),
+           // Important for cookies
+          credentials: "include",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(
+          data.message ||
+            data.email?.[0] ||
+            data.password?.[0] ||
+            "Registration failed"
+        );
+      }
+
+      sessionStorage.setItem("token", data.access_token);
+
+      setSuccess(true);
+      alert(data.message);
+      
+      
+      // Redirect after 2 seconds
+      setTimeout(() => navigate("/"), 2000);
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
       setIsLoading(false);
     }
   };
