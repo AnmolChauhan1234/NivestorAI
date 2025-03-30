@@ -16,6 +16,24 @@ import {
   Alert,
 } from "@mui/material";
 import { Add, Delete, Star } from "@mui/icons-material";
+import React, { useState, useEffect } from "react";
+import {
+  Typography,
+  Paper,
+  Box,
+  CircularProgress,
+  Button,
+  Grid,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Snackbar,
+  Alert,
+} from "@mui/material";
+import { Add, Delete, Star } from "@mui/icons-material";
 import StockCard from "../components/StockCard";
 
 const Watchlist = () => {
@@ -69,6 +87,7 @@ const Watchlist = () => {
       }
     };
 
+    fetchData();
     fetchData();
   }, []);
 

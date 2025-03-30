@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Typography, Paper, CircularProgress, Box } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Typography, Paper, CircularProgress, Box } from "@mui/material";
 import TradeTable from "../components/TradeTable";
 import AnalysisChart from "../components/AnalysisChart";
 

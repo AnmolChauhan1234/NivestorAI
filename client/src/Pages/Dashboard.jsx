@@ -9,6 +9,17 @@ import {
   Tab,
 } from "@mui/material";
 
+import React, { useState, useEffect } from "react";
+import {
+  Typography,
+  Paper,
+  Button,
+  CircularProgress,
+  Box,
+  Tabs,
+  Tab,
+} from "@mui/material";
+
 import StockCard from "../components/StockCard";
 import StockDetail from "../components/StockDetails";
 import MarketTrends from "../components/MarketTrends";
