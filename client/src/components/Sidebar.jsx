@@ -23,14 +23,14 @@ export default function Sidebar({ children, onToggle }) {
   const [hasUnreadBriefing, setHasUnreadBriefing] = useState(false);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
-  const userName = token ? "John Doe" : "";
+  const userName = token ? "Alex Bonanza" : "";
   const initials = userName
     ? userName
         .split(" ")
         .map((n) => n[0])
         .join("")
     : "";
-  const email = token ? "johndoe@gmail.com" : "";
+  const email = token ? "alex@bonanza.com" : "";
 
   // Set unread briefing when user logs in
   useEffect(() => {

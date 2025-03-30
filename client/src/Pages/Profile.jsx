@@ -15,10 +15,11 @@ const Profile = () => {
   const [balance, setBalance] = useState(12500.75);
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState({
-    name: "Alex Johnson",
-    email: "alex.johnson@example.com",
+    name: "Alex Bonanza",
+    email: "alex@bonanza.com",
     // avatar: "https://i.pinimg.com/736x/b0/dd/a1/b0dda14b01e645e7fd3a2adb9228a3ad.jpg",
-    avatar: "https://i.pinimg.com/736x/fd/d8/9e/fdd89e52258da1a81313decd31d39f9a.jpg",
+    // avatar: "https://i.pinimg.com/736x/fd/d8/9e/fdd89e52258da1a81313decd31d39f9a.jpg",
+    avatar: "https://i.pinimg.com/736x/cb/db/b8/cbdbb8fb4fc2de057d7358320e26bc36.jpg",
   });
 
   // Sample transaction history
