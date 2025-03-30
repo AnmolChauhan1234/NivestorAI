@@ -24,9 +24,11 @@ const PostDayAnalysis = () => {
 
         if (!response.ok) {
           alert("Failed to fetch analysis data");
+          return;
         }
 
         const data = await response.json();
+        console.log(data.market_analysis)
         setAnalysisData(data.market_analysis);
       } catch (err) {
         setError(err.message);
@@ -116,7 +118,7 @@ const PostDayAnalysis = () => {
             <Typography variant="h6" gutterBottom>
               Trade Details
             </Typography>
-            <TradeTable data={analysisData} />
+            <TradeTable trades={analysisData[0]?.trades || []} />
           </Paper>
         </>
       ) : (
