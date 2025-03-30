@@ -1,9 +1,5 @@
 from django.urls import path
-<<<<<<< HEAD
-from .views import ExecuteTradeAPI, TradeHistoryAPI
-=======
 from .views import ExecuteTradeAPI, TradeHistoryAPI, PortfolioHoldingsAPI, PortfolioValueAPI
->>>>>>> b6ed4d9 (`Added API endpoints for trading, watchlist, and notifications`)
 
 urlpatterns = [
     path("trades/", ExecuteTradeAPI.as_view(), name="execute-trade"),

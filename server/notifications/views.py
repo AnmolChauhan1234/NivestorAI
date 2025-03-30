@@ -2,7 +2,8 @@ from analysis.models import MarketAnalysis
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.views import APIView
-from .models import Trade, Stock
+from market.models import Stock
+from trading.models import Trade
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from .models import Notification

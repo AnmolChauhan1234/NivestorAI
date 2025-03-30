@@ -207,3 +207,12 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True  # If using authentication (JWT, sessions, etc.)
+
+
+
+
+SECURE_COOKIE = True  # Forces HTTPS for session cookies
+CSRF_COOKIE_SECURE = True  # Forces HTTPS for CSRF cookies
+
+
+REFRESH_TOKEN_EXPIRATION = 60 * 60 * 24 * 7  # Example: 7 days in seconds
