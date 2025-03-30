@@ -1,4 +1,13 @@
 export default function TradeTable({ trades }) {
+  if (!trades || trades.length === 0) {
+    return (
+      <div className="bg-white p-4 shadow-md rounded-lg">
+        <h2 className="text-xl font-semibold">📜 Trade History</h2>
+        <p className="mt-4">No trades to display</p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white p-4 shadow-md rounded-lg">
       <h2 className="text-xl font-semibold">📜 Trade History</h2>
