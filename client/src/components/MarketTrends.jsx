@@ -221,8 +221,8 @@ const MarketTrends = ({ trends, stocks, onStockSelect, loading }) => {
                               day: "numeric",
                             })}
                           </TableCell>
-                          <TableCell>${trend.open_price.toFixed(2)}</TableCell>
-                          <TableCell>${trend.close_price.toFixed(2)}</TableCell>
+                          <TableCell>₹{trend.open_price.toFixed(2)}</TableCell>
+                          <TableCell>₹{trend.close_price.toFixed(2)}</TableCell>
                           <TableCell>
                             <Box
                               sx={{

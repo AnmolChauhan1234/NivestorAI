@@ -92,7 +92,7 @@ export default function AnalysisChart() {
           color: "rgba(0, 0, 0, 0.05)",
         },
         ticks: {
-          callback: (value) => `$${value}`,
+          callback: (value) => `₹${value}`,
         },
       },
       x: {
