@@ -138,13 +138,13 @@ export default function AnalysisChart() {
         <div className="bg-indigo-50 p-4 rounded-lg">
           <h3 className="font-semibold text-indigo-800">Best Day</h3>
           <p className="text-2xl font-bold text-green-600">
-            +${Math.max(...sampleData).toLocaleString()}
+            +₹{Math.max(...sampleData).toLocaleString()}
           </p>
         </div>
         <div className="bg-indigo-50 p-4 rounded-lg">
           <h3 className="font-semibold text-indigo-800">Worst Day</h3>
           <p className="text-2xl font-bold text-red-600">
-            -${Math.abs(Math.min(...sampleData)).toLocaleString()}
+            -₹{Math.abs(Math.min(...sampleData)).toLocaleString()}
           </p>
         </div>
         <div className="bg-indigo-50 p-4 rounded-lg">
