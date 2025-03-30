@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Typography,
   Paper,
@@ -38,86 +38,47 @@ const Dashboard = () => {
     detail: false,
   });
   const [priceUpdates, setPriceUpdates] = useState({});
-  const refreshInterval = useRef(null);
 
-  // Fetch all stocks with controlled updates
-  const fetchStocks = async () => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/market/stocks/`
-      );
-      const data = await response.json();
-
-      // Detect price changes for animation
-      const updates = {};
-      data.results.forEach((newStock) => {
-        const oldStock = stocks.find((s) => s.symbol === newStock.symbol);
-        if (oldStock && oldStock.current_price !== newStock.current_price) {
-          updates[newStock.symbol] =
-            newStock.current_price > oldStock.current_price
-              ? theme.palette.success.light
-              : theme.palette.error.light;
-        }
-      });
-      setPriceUpdates(updates);
-
-      setStocks(data.results);
-    } catch (error) {
-      console.error("Error fetching stocks:", error);
-    } finally {
-      setLoading((prev) => ({ ...prev, stocks: false }));
-    }
-  };
-
-  // Setup refresh interval only when on stocks tab
+  // Fetch all stocks only once when component mounts
   useEffect(() => {
-    const setupRefreshInterval = () => {
-      if (activeTab === 0 && !selectedStock) {
-        // Initial fetch
-        fetchStocks();
-        // Set interval for 3 minutes (180000 ms)
-        refreshInterval.current = setInterval(fetchStocks, 180000);
-      } else {
-        // Clear interval if not on stocks tab or stock detail is open
-        if (refreshInterval.current) {
-          clearInterval(refreshInterval.current);
-          refreshInterval.current = null;
-        }
+    const fetchStocks = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/market/stocks/`
+        );
+        const data = await response.json();
+        setStocks(data.results);
+      } catch (error) {
+        console.error("Error fetching stocks:", error);
+      } finally {
+        setLoading((prev) => ({ ...prev, stocks: false }));
       }
     };
 
-    setupRefreshInterval();
-
-    // Cleanup interval on unmount
-    return () => {
-      if (refreshInterval.current) {
-        clearInterval(refreshInterval.current);
-      }
-    };
-  }, [activeTab, selectedStock, stocks]);
+    fetchStocks();
+  }, []); // Empty dependency array means this runs only once on mount
 
   // Fetch market trends when tab changes
   useEffect(() => {
     if (activeTab === 1 && marketTrends.length === 0) {
+      const fetchMarketTrends = async () => {
+        setLoading((prev) => ({ ...prev, trends: true }));
+        try {
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/market/market-trends/`
+          );
+          const data = await response.json();
+          setMarketTrends(data.results);
+        } catch (error) {
+          console.error("Error fetching market trends:", error);
+        } finally {
+          setLoading((prev) => ({ ...prev, trends: false }));
+        }
+      };
+
       fetchMarketTrends();
     }
   }, [activeTab]);
-
-  const fetchMarketTrends = async () => {
-    setLoading((prev) => ({ ...prev, trends: true }));
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/market/market-trends/`
-      );
-      const data = await response.json();
-      console.log("trends",data.results);
-      setMarketTrends(data.results);
-    } catch (error) {
-      console.error("Error fetching market trends:", error);
-    } finally {
-      setLoading((prev) => ({ ...prev, trends: false }));
-    }
-  };
 
   const fetchStockDetail = async (symbol) => {
     setLoading((prev) => ({ ...prev, detail: true }));
@@ -229,15 +190,7 @@ const Dashboard = () => {
               >
                 {stocks.map((stock, index) => (
                   <Grow in timeout={500 + index * 100} key={stock.symbol}>
-                    <Box
-                      sx={{
-                        animation: priceUpdates[stock.symbol]
-                          ? `${pulse(
-                              priceUpdates[stock.symbol]
-                            )} 1.5s ease-in-out`
-                          : "none",
-                      }}
-                    >
+                    <Box>
                       <StockCard
                         stock={stock}
                         onClick={() => {

@@ -39,6 +39,7 @@ export default function Briefing() {
           }
         );
         const data = await response.json();
+        console.log("notification",data.notifications)
         setNotifications(data.notifications || []); // Default to empty array if undefined
       } catch (error) {
         console.error("Error fetching notifications:", error);
