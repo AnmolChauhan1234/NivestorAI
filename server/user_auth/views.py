@@ -62,6 +62,61 @@ class RegisterView(APIView):
 
 
 
+# class LoginView(APIView):
+#     permission_classes = [AllowAny]
+
+#     def post(self, request):
+#         serializer = UserLoginSerializer(data=request.data)
+
+#         if serializer.is_valid():
+#             user = serializer.validated_data
+#             if not user:
+#                 raise AuthenticationFailed('Invalid username or password')
+
+#             # Generate JWT tokens
+#             refresh = RefreshToken.for_user(user)
+#             access_token = str(refresh.access_token)
+
+#             # Store the refresh token in the database
+#             user.refresh_token = str(refresh)
+#             user.save()
+
+#             response = JsonResponse({
+#                 'access_token': access_token,
+#                 'message': 'Login successful',
+#             }, status=status.HTTP_200_OK)
+
+#             # Store refresh token in HttpOnly cookie
+#             response.set_cookie(
+#                 'refresh_token', str(refresh),
+#                 httponly=True,
+#                 secure=settings.SECURE_COOKIE,
+#                 max_age=settings.REFRESH_TOKEN_EXPIRATION,
+#                 samesite='Strict'
+#             )
+
+#             return response
+
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+from django.contrib.auth.signals import user_logged_in
+from django.dispatch import Signal
+from django.utils.timezone import now
+from django.conf import settings
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.exceptions import AuthenticationFailed
+from django.http import JsonResponse
+from user_auth.models import User  # Ensure correct user model import
+from notifications.models import Notification  # Ensure correct import
+from market.models import Stock
+from .serializers import UserLoginSerializer
+
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
@@ -81,10 +136,13 @@ class LoginView(APIView):
             user.refresh_token = str(refresh)
             user.save()
 
+            # ✅ Manually trigger user_logged_in signal
+            user_logged_in.send(sender=user.__class__, request=request, user=user)
+
             response = JsonResponse({
                 'access_token': access_token,
                 'message': 'Login successful',
-            }, status=status.HTTP_200_OK)
+            }, status=200)
 
             # Store refresh token in HttpOnly cookie
             response.set_cookie(
@@ -97,7 +155,8 @@ class LoginView(APIView):
 
             return response
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=400)
+
 
 
 User = get_user_model()
