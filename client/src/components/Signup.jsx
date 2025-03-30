@@ -18,7 +18,6 @@ const FormContainer = styled("form")(({ theme }) => ({
 }));
 
 function Signup() {
-
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
@@ -36,15 +35,13 @@ function Signup() {
   };
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
     setIsLoading(true);
     setError(null);
 
     try {
       const response = await fetch(
-
-        `${import.meta.env.VITE_API_URL}/auth/register/`, 
+        `${import.meta.env.VITE_API_URL}/auth/register/`,
         {
           method: "POST",
           headers: {
@@ -55,9 +52,8 @@ function Signup() {
             email: formData.email,
             phone_number: formData.phone_number,
             password: formData.password,
-            
           }),
-           // Important for cookies
+          // Important for cookies
           credentials: "include",
         }
       );
@@ -65,23 +61,19 @@ function Signup() {
       const data = await response.json();
 
       if (!response.ok) {
-        alert(
+        setError(
           data.message ||
             data.email?.[0] ||
             data.password?.[0] ||
             "Registration failed"
         );
+      } else {
+        setSuccess(true);
+
+        sessionStorage.setItem("token", data.access_token);
+        // Redirect after 2 seconds
+        setTimeout(() => navigate("/dashboard"), 1000);
       }
-
-      sessionStorage.setItem("token", data.access_token);
-
-      setSuccess(true);
-      alert(data.message);
-      
-      
-      // Redirect after 2 seconds
-      setTimeout(() => navigate("/"), 2000);
-
     } catch (err) {
       setError(err.message);
     } finally {
@@ -92,9 +84,11 @@ function Signup() {
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-80px)] bg-background">
       <FormContainer onSubmit={handleSubmit}>
+        {/* Heading section starts here */}
         <Typography variant="h5" align="center" color="text">
           Sign Up
         </Typography>
+        {/* heading section ends here */}
 
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
@@ -191,18 +185,26 @@ function Signup() {
           {isLoading ? "Signing up..." : "Sign Up"}
         </Button>
 
+        {/* Already have account section starts here */}
         <Typography
           variant="body2"
           align="center"
           sx={{
             color: "#3730a3",
             cursor: "pointer",
-            "&:hover": { color: "#5b5fc7" },
+            "&:hover": {
+              color: "#2a2678", // Slightly darker shade of #3730a3
+              textDecoration: "underline", // Optional: adds underline on hover
+            },
+            transition: "color 0.2s ease", // Smooth color transition
           }}
           onClick={() => navigate("/")}
         >
           Already have an account? Login
         </Typography>
+        {/* Already have account section ends here */}
+
+        
       </FormContainer>
     </div>
   );

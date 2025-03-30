@@ -55,14 +55,16 @@ function Login() {
       alert(data.message);
 
        // Redirect after 2 seconds
-      setTimeout(() => navigate("/profile"), 2000);
+      setTimeout(() => navigate("/dashboard"), 1000);
     } else{
       alert("Invalid Credentails.");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-80px)] bg-background">
+    <div 
+      className="flex items-center justify-center min-h-[calc(100vh-80px)] bg-background"
+      >
       <FormContainer onSubmit={handleSubmit}>
         <Typography variant="h5" align="center" color="text">
           Login
@@ -136,12 +138,17 @@ function Login() {
           sx={{
             color: "#3730a3",
             cursor: "pointer",
-            "&:hover": { color: "#c7d2fe" },
+            "&:hover": {
+              color: "#2a2678",
+              textDecoration: "underline",
+            },
+            transition: "color 0.2s ease",
           }}
           onClick={() => navigate("/signup")}
         >
           Don’t have an account? Sign Up
         </Typography>
+        
       </FormContainer>
     </div>
   );

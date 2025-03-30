@@ -9,8 +9,6 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import ProfileSetup from "./components/ProfileSetup";
 import Sidebar from "./components/Sidebar";
-
-// New Pages
 import Briefing from "./Pages/Briefing";
 import PostDayAnalysis from "./Pages/PostDayAnalysis";
 import Dashboard from "./Pages/Dashboard";
@@ -19,8 +17,13 @@ import Profile from "./Pages/Profile";
 import AIChatDashboard from "./components/AIChatDashboard";
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
-  return token ? children : <Navigate to="/" />;
+  const token = sessionStorage.getItem("token");
+  return token ? children : <Navigate to="/" replace />;
+};
+
+const AuthRoute = ({ children }) => {
+  const token = sessionStorage.getItem("token");
+  return token ? <Navigate to="/dashboard" replace /> : children;
 };
 
 function App() {
@@ -30,74 +33,112 @@ function App() {
     <Router>
       <div className="flex flex-col min-h-screen bg-background">
         <div className="flex">
-          <Sidebar onToggle={setSidebarExpanded} />
+          {/* Sidebar only visible when authenticated */}
+          {sessionStorage.getItem("token") && (
+            <Sidebar onToggle={setSidebarExpanded} />
+          )}
+
           <div
             className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ${
-              sidebarExpanded ? "md:ml-64" : "md:ml-16"
+              sidebarExpanded && sessionStorage.getItem("token")
+                ? "md:ml-64"
+                : sessionStorage.getItem("token")
+                ? "md:ml-16"
+                : "ml-0"
             }`}
-            style={{ minHeight: "calc(100vh - 80px)" }} // Adjust based on your footer height
+            style={{ minHeight: "calc(100vh - 80px)" }}
           >
             <Routes>
-              <Route path="/" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/settings" element={<ProfileSetup />} />
+              {/* Auth Routes - only accessible when logged out */}
+              <Route
+                path="/"
+                element={
+                  <AuthRoute>
+                    <Login />
+                  </AuthRoute>
+                }
+              />
+              <Route
+                path="/signup"
+                element={
+                  <AuthRoute>
+                    <Signup />
+                  </AuthRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <ProfileSetup />
+                  </ProtectedRoute>
+                }
+              />
 
-              {/* Protected Routes */}
-
+              {/* Protected Routes - only accessible when logged in */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/aichat"
                 element={
-                  // <ProtectedRoute>
+                  <ProtectedRoute>
                     <AIChatDashboard />
-                  // </ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/profile"
                 element={
-                  // <ProtectedRoute>
+                  <ProtectedRoute>
                     <Profile />
-                  // </ProtectedRoute>
-                }
-              />
-
-              <Route
-                path="/dashboard"
-                element={
-                  // <ProtectedRoute>
-                    <Dashboard />
-                  // </ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/briefing"
                 element={
-                  // <ProtectedRoute>
+                  <ProtectedRoute>
                     <Briefing />
-                  // </ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/analysis"
                 element={
-                  // <ProtectedRoute>
+                  <ProtectedRoute>
                     <PostDayAnalysis />
-                  // </ProtectedRoute>
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/watchlist"
                 element={
-                  // <ProtectedRoute>
+                  <ProtectedRoute>
                     <Watchlist />
-                  // </ProtectedRoute>
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Catch-all route */}
+              <Route
+                path="*"
+                element={
+                  sessionStorage.getItem("token") ? (
+                    <Navigate to="/dashboard" replace />
+                  ) : (
+                    <Navigate to="/" replace />
+                  )
                 }
               />
             </Routes>
           </div>
         </div>
-
-        {/* <Footer sidebarExpanded={sidebarExpanded} /> */}
       </div>
     </Router>
   );

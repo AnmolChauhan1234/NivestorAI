@@ -35,7 +35,7 @@ const StockDetail = ({ stock, loading, onBack }) => {
       >
         <Paper sx={{ p: 2 }}>
           <Typography variant="subtitle2">Current Price</Typography>
-          <Typography variant="h5">${stock.current_price}</Typography>
+          <Typography variant="h5">₹{stock.current_price}</Typography>
         </Paper>
 
         <Paper sx={{ p: 2 }}>

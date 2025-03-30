@@ -59,13 +59,17 @@ export default function Sidebar({ children, onToggle }) {
         sessionStorage.removeItem("token");
         alert(data.message);
         setTimeout(() => {
-          navigate("/login");
-        }, 2000);
+          navigate("/");
+        }, 1000);
       } else {
-        alert("Could not logout");
+        alert("Logout Error!! Taking you back to login.");
+        sessionStorage.removeItem("token");
+        navigate('/');
       }
     } catch (error) {
+      sessionStorage.removeItem("token");
       console.log(error);
+      navigate('/');
     }
   };
 
@@ -81,11 +85,13 @@ export default function Sidebar({ children, onToggle }) {
           <div className="p-4 pb-2 flex justify-between items-center">
             <img
               src="https://img.logoipsum.com/243.svg"
+              // src="./images/applogo.jpg"
               className={`overflow-hidden transition-all ${
                 expanded ? "w-32" : "w-0"
               }`}
-              alt=""
+              alt="NIVESTOR AI"
             />
+              
             <button
               onClick={handleToggle}
               className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 cursor-pointer"

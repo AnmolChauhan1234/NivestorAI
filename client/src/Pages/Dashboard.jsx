@@ -9,22 +9,13 @@ import {
   Tab,
 } from "@mui/material";
 
-import React, { useState, useEffect } from "react";
-import {
-  Typography,
-  Paper,
-  Button,
-  CircularProgress,
-  Box,
-  Tabs,
-  Tab,
-} from "@mui/material";
-
 import StockCard from "../components/StockCard";
 import StockDetail from "../components/StockDetails";
 import MarketTrends from "../components/MarketTrends";
 
 const Dashboard = () => {
+
+  //variable to store the datas
   const [activeTab, setActiveTab] = useState(0);
   const [stocks, setStocks] = useState([]);
   const [selectedStock, setSelectedStock] = useState(null);
@@ -40,7 +31,7 @@ const Dashboard = () => {
     const fetchStocks = async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/stocks/`
+          `${import.meta.env.VITE_API_URL}/market/stocks/`,
         );
         const data = await response.json();
         setStocks(data.results);
@@ -54,34 +45,24 @@ const Dashboard = () => {
     fetchStocks();
   }, []);
 
-  // Fetch market trends when tab changes to trends
+
+  // Fetch market trends when tab changes to Market Trends
   useEffect(() => {
     if (activeTab === 1 && marketTrends.length === 0) {
       fetchMarketTrends();
     }
   }, [activeTab]);
 
-  const fetchStockDetail = async (symbol) => {
-    setLoading((prev) => ({ ...prev, detail: true }));
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/stocks/${symbol}/`
-      );
-      const data = await response.json();
-      setSelectedStock(data);
-    } catch (error) {
-      console.error("Error fetching stock detail:", error);
-    } finally {
-      setLoading((prev) => ({ ...prev, detail: false }));
-    }
-  };
 
-  const fetchMarketTrends = async (symbol = null) => {
+  //fetch market trends api is called here
+  const fetchMarketTrends = async () => {
+
+    //setting loading status
     setLoading((prev) => ({ ...prev, trends: true }));
+
+    //calling the api.
     try {
-      const url = symbol
-        ? `${import.meta.env.VITE_API_URL}/market-trends/?symbol=${symbol}`
-        : `${import.meta.env.VITE_API_URL}/market-trends/`;
+      const url = `${import.meta.env.VITE_API_URL}/market/market-trends/`;
 
       const response = await fetch(url);
       const data = await response.json();
@@ -93,13 +74,33 @@ const Dashboard = () => {
     }
   };
 
+  //fetch a particular stock detail
+  const fetchStockDetail = async (symbol) => {
+    setLoading((prev) => ({ ...prev, detail: true }));
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/market/stocks/${symbol}/`
+      );
+      const data = await response.json();
+      setSelectedStock(data);
+    } catch (error) {
+      console.error("Error fetching stock detail:", error);
+    } finally {
+      setLoading((prev) => ({ ...prev, detail: false }));
+    }
+  };
+
+
+
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
-    setSelectedStock(null); // Reset selected stock when changing tabs
+    // Reset selected stock when changing tabs
+    setSelectedStock(null); 
   };
 
   return (
     <Paper sx={{ p: 3, borderRadius: 2 }}>
+
       <Typography variant="h4" gutterBottom>
         📊 Stock Market Dashboard
       </Typography>
@@ -159,7 +160,7 @@ const Dashboard = () => {
               trends={marketTrends}
               stocks={stocks}
               onStockSelect={(symbol) => {
-                fetchMarketTrends(symbol);
+                fetchStockDetail(symbol);
               }}
             />
           )}
