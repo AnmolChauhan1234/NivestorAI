@@ -64,7 +64,7 @@ const StockCard = ({ stock, onClick }) => {
                 : theme.palette.primary.dark,
           }}
         >
-          ₹{stock.current_price.toLocaleString()}
+          ₹{stock.current_price}
         </Typography>
 
         <Typography
