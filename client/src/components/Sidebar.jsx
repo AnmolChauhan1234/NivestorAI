@@ -13,16 +13,16 @@ import {
   Heart,
   MessageSquare,
 } from "lucide-react";
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SidebarContext = createContext();
 
 export default function Sidebar({ children, onToggle }) {
   const [expanded, setExpanded] = useState(true);
+  const [hasUnreadBriefing, setHasUnreadBriefing] = useState(false);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
-  // let token = true;
   const userName = token ? "John Doe" : "";
   const initials = userName
     ? userName
@@ -32,6 +32,13 @@ export default function Sidebar({ children, onToggle }) {
     : "";
   const email = token ? "johndoe@gmail.com" : "";
 
+  // Set unread briefing when user logs in
+  useEffect(() => {
+    if (token) {
+      setHasUnreadBriefing(true);
+    }
+  }, [token]);
+
   const collapseSidebar = () => setExpanded(false);
 
   const handleToggle = () => {
@@ -40,15 +47,14 @@ export default function Sidebar({ children, onToggle }) {
   };
 
   const handleLogout = async () => {
-    //calling api
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/auth/logout/`,
         {
           method: "POST",
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -64,13 +70,19 @@ export default function Sidebar({ children, onToggle }) {
       } else {
         alert("Logout Error!! Taking you back to login.");
         sessionStorage.removeItem("token");
-        navigate('/');
+        navigate("/");
       }
     } catch (error) {
       sessionStorage.removeItem("token");
       console.log(error);
-      navigate('/');
+      navigate("/");
     }
+  };
+
+  const handleBriefingClick = () => {
+    setHasUnreadBriefing(false);
+    navigate("/briefing");
+    if (expanded && window.innerWidth < 768) collapseSidebar();
   };
 
   return (
@@ -85,13 +97,12 @@ export default function Sidebar({ children, onToggle }) {
           <div className="p-4 pb-2 flex justify-between items-center">
             <img
               src="https://img.logoipsum.com/243.svg"
-              // src="./images/applogo.jpg"
               className={`overflow-hidden transition-all ${
                 expanded ? "w-32" : "w-0"
               }`}
               alt="NIVESTOR AI"
             />
-              
+
             <button
               onClick={handleToggle}
               className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 cursor-pointer"
@@ -109,7 +120,7 @@ export default function Sidebar({ children, onToggle }) {
               />
 
               <SidebarItem
-                icon={<Heart size={20} />} // Using Heart icon for wishlist
+                icon={<Heart size={20} />}
                 text="Watchlist"
                 to="/watchlist"
               />
@@ -127,15 +138,14 @@ export default function Sidebar({ children, onToggle }) {
               <SidebarItem
                 icon={<FileText size={20} />}
                 text="Briefing"
-                to="/briefing"
+                alert={hasUnreadBriefing}
+                onClick={handleBriefingClick}
               />
               <SidebarItem
                 icon={<ClipboardList size={20} />}
                 text="Post-Day Analysis"
                 to="/analysis"
               />
-
-              {/* <SidebarItem icon={<BarChart size={20} />} text="Analytics" /> */}
 
               <SidebarItem
                 icon={<Settings size={20} />}
@@ -206,7 +216,7 @@ export default function Sidebar({ children, onToggle }) {
                 />
 
                 <SidebarItem
-                  icon={<Heart size={20} />} // Using Heart icon for wishlist
+                  icon={<Heart size={20} />}
                   text="Watchlist"
                   to="/watchlist"
                 />
@@ -226,15 +236,14 @@ export default function Sidebar({ children, onToggle }) {
                 <SidebarItem
                   icon={<FileText size={20} />}
                   text="Briefing"
-                  to="/briefing"
+                  alert={hasUnreadBriefing}
+                  onClick={handleBriefingClick}
                 />
                 <SidebarItem
                   icon={<ClipboardList size={20} />}
                   text="Post-Day Analysis"
                   to="/analysis"
                 />
-
-                {/* <SidebarItem icon={<BarChart size={20} />} text="Analytics" to='/analysis'/> */}
 
                 <SidebarItem
                   icon={<Settings size={20} />}
@@ -292,13 +301,12 @@ export default function Sidebar({ children, onToggle }) {
 }
 
 export function SidebarItem({ icon, text, active, alert, to, onClick }) {
-  const { expanded, collapseSidebar } = useContext(SidebarContext);
+  const { expanded } = useContext(SidebarContext);
   const navigate = useNavigate();
 
   const handleClick = () => {
     if (to) navigate(to);
     if (onClick) onClick();
-    if (expanded && window.innerWidth < 768) collapseSidebar();
   };
 
   return (
@@ -324,11 +332,7 @@ export function SidebarItem({ icon, text, active, alert, to, onClick }) {
         {text}
       </span>
       {alert && (
-        <div
-          className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${
-            expanded ? "" : "top-2"
-          }`}
-        />
+        <div className="absolute right-2 w-2 h-2 rounded-full bg-red-500" />
       )}
 
       {!expanded && (
