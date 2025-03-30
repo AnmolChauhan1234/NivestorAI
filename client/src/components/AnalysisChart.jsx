@@ -156,7 +156,7 @@ export default function AnalysisChart() {
                 : "text-red-600"
             }`}
           >
-            {sampleData.reduce((a, b) => a + b, 0) >= 0 ? "+" : "-"}$
+            {sampleData.reduce((a, b) => a + b, 0) >= 0 ? "+" : "-"}₹
             {Math.abs(sampleData.reduce((a, b) => a + b, 0)).toLocaleString()}
           </p>
         </div>
