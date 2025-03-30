@@ -13,16 +13,17 @@ const PostDayAnalysis = () => {
       try {
         const token = sessionStorage.getItem("token");
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/analysis/`,
+          `${import.meta.env.VITE_API_URL}/analysis/`,
           {
+            method: "GET",
             headers: {
-              Authorization: `Token ${token}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
 
         if (!response.ok) {
-          throw new Error("Failed to fetch analysis data");
+          alert("Failed to fetch analysis data");
         }
 
         const data = await response.json();

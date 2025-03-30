@@ -40,10 +40,11 @@ const Watchlist = () => {
 
         // Fetch user's watchlist
         const watchlistRes = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/watchlist/`,
+          `${import.meta.env.VITE_API_URL}/watchlist/`,
           {
+
             headers: {
-              Authorization: `Token ${token}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -52,10 +53,10 @@ const Watchlist = () => {
 
         // Fetch all available stocks
         const stocksRes = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/stocks/`,
+          `${import.meta.env.VITE_API_URL}/market/stocks/`,
           {
             headers: {
-              Authorization: `Token ${token}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -79,12 +80,12 @@ const Watchlist = () => {
       const token = sessionStorage.getItem("token");
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/watchlist/add/`,
+        `${import.meta.env.VITE_API_URL}/watchlist/add/`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Token ${token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ symbol: selectedStock.symbol }),
         }
@@ -98,7 +99,7 @@ const Watchlist = () => {
 
       // Refresh watchlist
       const watchlistRes = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/watchlist/`,
+        `${import.meta.env.VITE_API_URL}/watchlist/`,
         {
           headers: {
             Authorization: `Token ${token}`,
@@ -125,12 +126,12 @@ const Watchlist = () => {
       const token = sessionStorage.getItem("token");
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/watchlist/remove/`,
+        `${import.meta.env.VITE_API_URL}/watchlist/remove/`,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Token ${token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ symbol: selectedStock.symbol }),
         }
@@ -147,7 +148,7 @@ const Watchlist = () => {
         `${import.meta.env.VITE_API_URL}/api/watchlist/`,
         {
           headers: {
-            Authorization: `Token ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );

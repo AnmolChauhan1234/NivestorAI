@@ -43,7 +43,14 @@ export default function Sidebar({ children, onToggle }) {
     //calling api
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/auth/logout`
+        `${import.meta.env.VITE_API_URL}/auth/logout/`,
+        {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+        }
       );
 
       const data = await response.json();

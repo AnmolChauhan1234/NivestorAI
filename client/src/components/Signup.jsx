@@ -18,12 +18,14 @@ const FormContainer = styled("form")(({ theme }) => ({
 }));
 
 function Signup() {
+
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
     phone_number: "",
     password: "",
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -34,30 +36,36 @@ function Signup() {
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/register/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          full_name: formData.full_name,
-          email: formData.email,
-          phone_number: formData.phone_number,
-          password: formData.password,
-          
-        }),
-        credentials: "include", // Important for cookies
-      });
+      const response = await fetch(
+
+        `${import.meta.env.VITE_API_URL}/auth/register/`, 
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            full_name: formData.full_name,
+            email: formData.email,
+            phone_number: formData.phone_number,
+            password: formData.password,
+            
+          }),
+           // Important for cookies
+          credentials: "include",
+        }
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
+        alert(
           data.message ||
             data.email?.[0] ||
             data.password?.[0] ||
@@ -65,9 +73,15 @@ function Signup() {
         );
       }
 
+      sessionStorage.setItem("token", data.access_token);
+
       setSuccess(true);
+      alert(data.message);
+      
+      
       // Redirect after 2 seconds
       setTimeout(() => navigate("/"), 2000);
+
     } catch (err) {
       setError(err.message);
     } finally {

@@ -80,7 +80,7 @@ function AIChatDashboard() {
   useEffect(() => {
     // Fetch initial stock suggestions
     const token = sessionStorage.getItem("token");
-    fetch(`${import.meta.env.VITE_API_URL}/api/market/stocks/`, {
+    fetch(`${import.meta.env.VITE_API_URL}/market/stocks/`, {
       headers: { Authorization: `Token ${token}` },
     })
       .then((res) => res.json())
@@ -118,12 +118,12 @@ function AIChatDashboard() {
     try {
       const token = sessionStorage.getItem("token");
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/ai/ai-advice/`,
+        `${import.meta.env.VITE_API_URL}/ai/ai-advice/`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Token ${token}`,
+            "Authorization": `Bearer ${token}`
           },
           body: JSON.stringify({ message: userMessage }),
         }

@@ -69,8 +69,8 @@ const Dashboard = () => {
     setLoading((prev) => ({ ...prev, trends: true }));
     try {
       const url = symbol
-        ? `${import.meta.env.VITE_API_URL}/api/market-trends/?symbol=${symbol}`
-        : `${import.meta.env.VITE_API_URL}/api/market-trends/`;
+        ? `${import.meta.env.VITE_API_URL}/market-trends/?symbol=${symbol}`
+        : `${import.meta.env.VITE_API_URL}/market-trends/`;
 
       const response = await fetch(url);
       const data = await response.json();
