@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Typography,
   Paper,
@@ -13,19 +13,20 @@ import {
   TextField,
   Snackbar,
   Alert,
+  useTheme,
   Grid2
 } from "@mui/material";
 import { Add, Delete, Star } from "@mui/icons-material";
 import StockCard from "../components/StockCard";
 
 const Watchlist = () => {
-
-
+  const theme = useTheme(); // Get the theme object
   const [watchlist, setWatchlist] = useState([]);
   const [allStocks, setAllStocks] = useState([]);
   const [loading, setLoading] = useState({
     watchlist: true,
     stocks: false,
+    initialLoad: true
   });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -34,32 +35,71 @@ const Watchlist = () => {
   const [selectedStock, setSelectedStock] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Fetch watchlist of the user when we load the page.
+  // Fetch watchlist and all available stocks on initial load
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         const token = sessionStorage.getItem("token");
+        
+        // Fetch watchlist
         const watchlistRes = await fetch(
           `${import.meta.env.VITE_API_URL}/watchlist/`,
           {
             headers: {
-              "Content-Type": "application/json",
               "Authorization": `Bearer ${token}`,
             },
           }
         );
         const watchlistData = await watchlistRes.json();
-        setWatchlist(watchlistData.watchlist);
+        setWatchlist(watchlistData.watchlist || []);
+
+        // Fetch all stocks
+        const stocksRes = await fetch(
+          `${import.meta.env.VITE_API_URL}/market/stocks/`
+        );
+        const stocksData = await stocksRes.json();
+        setAllStocks(stocksData.results || []);
+
       } catch (err) {
         setError(err.message);
       } finally {
-        setLoading({watchlist: false});
+        setLoading(prev => ({...prev, watchlist: false, initialLoad: false}));
       }
     };
 
     fetchData();
   }, []);
+
+  // Memoized filtered stocks for better performance
+  const filteredStocks = useMemo(() => {
+    if (!searchTerm) return allStocks;
+    const term = searchTerm.toLowerCase();
+    return allStocks.filter(stock => 
+      stock.symbol.toLowerCase().includes(term) || 
+      stock.name.toLowerCase().includes(term))
+  }, [allStocks, searchTerm]);
+
+  const sendNotification = async (message, type="info") => {
+    try {
+      const token = sessionStorage.getItem("token");
+      await fetch(
+        `${import.meta.env.VITE_API_URL}/notifications/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            message,
+            type
+          }),
+        }
+      );
+    } catch (err) {
+      console.error("Failed to send notification:", err);
+    }
+  };
 
   const handleAddToWatchlist = async () => {
     if (!selectedStock) return;
@@ -68,39 +108,46 @@ const Watchlist = () => {
       setLoading({ ...loading, stocks: true });
       const token = sessionStorage.getItem("token");
 
+      // Add to watchlist
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/watchlist/add/`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            "Authorization": `Bearer ${token}`,
           },
           body: JSON.stringify({ symbol: selectedStock.symbol }),
         }
       );
 
-      const data = await response.json();
-
       if (!response.ok) {
-        alert(data.error);
-        return;
+        const data = await response.json();
+        throw new Error(data.error || "Failed to add to watchlist");
       }
+
+      // Send notification
+      await sendNotification(
+        `Added ${selectedStock.symbol} to your watchlist`,
+        "success"
+      );
 
       // Refresh watchlist
       const watchlistRes = await fetch(
         `${import.meta.env.VITE_API_URL}/watchlist/`,
         {
           headers: {
-            "Authorization": `Token ${token}`,
+            "Authorization": `Bearer ${token}`,
           },
         }
       );
       const watchlistData = await watchlistRes.json();
-      setWatchlist(watchlistData.watchlist);
+      setWatchlist(watchlistData.watchlist || []);
 
       setSuccess(`${selectedStock.symbol} added to watchlist`);
       setOpenAddDialog(false);
+      setSelectedStock(null);
+      setSearchTerm("");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -108,7 +155,6 @@ const Watchlist = () => {
     }
   };
 
-  //removing stock form watchlist.
   const handleRemoveFromWatchlist = async () => {
     if (!selectedStock) return;
 
@@ -116,6 +162,7 @@ const Watchlist = () => {
       setLoading({ ...loading, stocks: true });
       const token = sessionStorage.getItem("token");
 
+      // Remove from watchlist
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/watchlist/remove/`,
         {
@@ -128,16 +175,20 @@ const Watchlist = () => {
         }
       );
 
-      const data = await response.json();
-
       if (!response.ok) {
-        alert(data.error || "Failed to remove from watchlist");
-        return;
+        const data = await response.json();
+        throw new Error(data.error || "Failed to remove from watchlist");
       }
 
-      //Delete success Refresh watchlist
+      // Send notification
+      await sendNotification(
+        `Removed ${selectedStock.symbol} from your watchlist`,
+        "warning"
+      );
+
+      // Refresh watchlist
       const watchlistRes = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/watchlist/`,
+        `${import.meta.env.VITE_API_URL}/watchlist/`,
         {
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -145,24 +196,17 @@ const Watchlist = () => {
         }
       );
       const watchlistData = await watchlistRes.json();
-      setWatchlist(watchlistData.watchlist);
+      setWatchlist(watchlistData.watchlist || []);
 
       setSuccess(`${selectedStock.symbol} removed from watchlist`);
       setOpenRemoveDialog(false);
+      setSelectedStock(null);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading({ ...loading, stocks: false });
     }
   };
-
-
-  //filtering the stocks
-  const filteredStocks = allStocks.filter(
-    (stock) =>
-      stock.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      stock.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <Box sx={{ p: 3 }}>
@@ -173,7 +217,7 @@ const Watchlist = () => {
         Track and manage your favorite stocks
       </Typography>
 
-      {/* Error/Success notifications */}
+      {/* Notifications */}
       <Snackbar
         open={!!error}
         autoHideDuration={6000}
@@ -194,20 +238,13 @@ const Watchlist = () => {
       </Snackbar>
 
       {/* Watchlist content */}
-      {loading.watchlist ? (
+      {loading.initialLoad ? (
         <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
           <CircularProgress />
         </Box>
       ) : (
         <>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              mt: 3,
-              mb: 2,
-            }}
-          >
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3, mb: 2 }}>
             <Typography variant="h6">
               Your Watched Stocks ({watchlist.length})
             </Typography>
@@ -215,6 +252,7 @@ const Watchlist = () => {
               variant="contained"
               startIcon={<Add />}
               onClick={() => setOpenAddDialog(true)}
+              disabled={loading.watchlist}
             >
               Add Stocks
             </Button>
@@ -239,6 +277,7 @@ const Watchlist = () => {
                           setSelectedStock(item);
                           setOpenRemoveDialog(true);
                         }}
+                        disabled={loading.stocks}
                       >
                         <Delete />
                       </IconButton>
@@ -252,9 +291,18 @@ const Watchlist = () => {
       )}
 
       {/* Add to Watchlist Dialog */}
-      <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)}>
+      <Dialog 
+        open={openAddDialog} 
+        onClose={() => {
+          setOpenAddDialog(false);
+          setSearchTerm("");
+          setSelectedStock(null);
+        }}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>Add Stocks to Watchlist</DialogTitle>
-        <DialogContent sx={{ minWidth: "400px" }}>
+        <DialogContent>
           <TextField
             fullWidth
             label="Search stocks"
@@ -262,10 +310,20 @@ const Watchlist = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             sx={{ mb: 2 }}
+            autoFocus
           />
-          <Box sx={{ maxHeight: "400px", overflowY: "auto" }}>
+          
+          <Box sx={{ 
+            maxHeight: "400px", 
+            overflowY: "auto",
+            border: `1px solid ${theme.palette.divider}`,
+            borderRadius: 1,
+            p: 1
+          }}>
             {filteredStocks.length === 0 ? (
-              <Typography color="text.secondary">No stocks found</Typography>
+              <Typography color="text.secondary" textAlign="center" py={2}>
+                {loading.initialLoad ? "Loading stocks..." : "No matching stocks found"}
+              </Typography>
             ) : (
               filteredStocks.map((stock) => (
                 <Paper
@@ -277,7 +335,12 @@ const Watchlist = () => {
                     justifyContent: "space-between",
                     alignItems: "center",
                     cursor: "pointer",
-                    "&:hover": { backgroundColor: "#f5f5f5" },
+                    backgroundColor: selectedStock?.symbol === stock.symbol 
+                      ? theme.palette.action.selected 
+                      : "inherit",
+                    "&:hover": { 
+                      backgroundColor: theme.palette.action.hover 
+                    },
                   }}
                   onClick={() => setSelectedStock(stock)}
                 >
@@ -287,19 +350,24 @@ const Watchlist = () => {
                       {stock.name}
                     </Typography>
                   </Box>
-                  {selectedStock?.symbol === stock.symbol ? (
+                  {selectedStock?.symbol === stock.symbol && (
                     <Star color="primary" />
-                  ) : null}
+                  )}
                 </Paper>
               ))
             )}
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => {
-            setOpenAddDialog(false);
-            setSelectedStock(null);
-          }}>Cancel</Button>
+          <Button 
+            onClick={() => {
+              setOpenAddDialog(false);
+              setSearchTerm("");
+              setSelectedStock(null);
+            }}
+          >
+            Cancel
+          </Button>
           <Button
             onClick={handleAddToWatchlist}
             disabled={!selectedStock || loading.stocks}
