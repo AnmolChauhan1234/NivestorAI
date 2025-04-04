@@ -22,7 +22,7 @@ Nivestor AI is tailored for new investors with limited capital (e.g., ₹2000), 
 
 ## Features
 
-- **Client Interface**: A responsive web interface (built with JavaScript) for viewing live market data, notifications, and educational content.
+- **Client Interface**: A responsive web interface (built with React.js) for viewing live market data, notifications, and educational content.
 - **Server Backend**: A Python-based server handling data processing, AI computations, and API integrations.
 - **Real-Time Updates**: Get timely market alerts and performance summaries.
 - **Educational Tools**: Learn trading strategies and market analysis techniques via integrated tutorials and chatbot interactions.
@@ -113,7 +113,7 @@ DEBUG=True
 
 From the `client` directory, start the web application:
 ```bash
-npm start
+npm run dev
 ```
 After starting both components, open your browser to access the client interface (typically at http://localhost:3000).
 ## Contact
