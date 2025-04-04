@@ -89,13 +89,13 @@ From the `client` directory, start the web application:
 ```bash
 npm start
 ```
-	After starting both components, open your browser to access the client interface (typically at http://localhost:3000).
+After starting both components, open your browser to access the client interface (typically at http://localhost:3000)#http://localhost:3000.
 ## Contact
 
 For questions or feedback, please contact:
 
-- **Name:** [AnmolChauhan]
+- **Name:** AnmolChauhan
     
-- **Email:** [anmolchauhan1234@gmail.com]
+- **Email:** [anmolchauhan1234@gmail.com]#anmolchauhan1234@gmail.com
     
 - **GitHub:** [AnmolChauhan1234](https://github.com/AnmolChauhan1234)
