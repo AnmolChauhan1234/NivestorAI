@@ -1,5 +1,5 @@
 # Nivestor AI
-Nivestor AI is a trading education platform designed to empower novice investors in the Indian stock and crypto markets. The project combines a modern web-based client with a Python-powered server to deliver real-time market insights, educational resources, and AI-driven trading guidance.
+Nivestor AI is a trading education platform designed to empower novice investors in the stock and crypto markets. The project combines a modern web-based client with a Python-powered server to deliver real-time market insights, educational resources, and AI-driven trading guidance.
 
 ## Table of Contents
 
