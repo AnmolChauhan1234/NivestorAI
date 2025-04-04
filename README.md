@@ -49,7 +49,7 @@ This structure separates concerns, making it easier to manage the UI and backend
 
 1. **Clone the Repository**
 
-   ```bash
+```bash
 git clone https://github.com/AnmolChauhan1234/NivestorAI.git
 cd NivestorAI
 ```
