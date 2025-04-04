@@ -40,19 +40,18 @@ This structure separates concerns, making it easier to manage the UI and backend
 ## Installation
 
 ### Prerequisites
-```
 - **Git**: To clone the repository.
 - **Python** (version 3.7+): For the server components.
 - **Node.js** and **npm**: For the client components.
-```
+
+
 ### Steps
 
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/AnmolChauhan1234/NivestorAI.git
-   cd NivestorAI
-
+git clone https://github.com/AnmolChauhan1234/NivestorAI.git
+cd NivestorAI
 ```
 2.**Setup the Server**
 
@@ -97,6 +96,6 @@ For questions or feedback, please contact:
 
 - **Name:** [AnmolChauhan]
     
-- **Email:** []
+- **Email:** [anmolchauhan1234@gmail.com]
     
 - **GitHub:** [AnmolChauhan1234](https://github.com/AnmolChauhan1234)
