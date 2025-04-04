@@ -30,7 +30,7 @@ Nivestor AI is tailored for new investors with limited capital (e.g., ₹2000), 
 ## Project Structure
 ```bash
 project-root/
-├── client/                  # Frontend (if applicable)
+├── client/                  # Frontend
 ├── server/                  # Backend
 │   ├── .venv/               # Virtual environment
 │   ├── ai/                  # AI-related functionalities
@@ -53,7 +53,7 @@ This structure separates concerns, making it easier to manage the UI and backend
 
 ### Prerequisites
 - **Git**: To clone the repository.
-- **Python** (version 3.7+): For the server components.
+- **Python** (version 3.10+): For the server components.
 - **Node.js** and **npm**: For the client components.
 
 
@@ -71,6 +71,9 @@ Navigate to the server directory and install Python dependencies:
 
 ```bash
 cd server
+python -m venv .venv
+source .venv/bin/activate # on Mac/Linux
+.venv\Scripts\activate # on Windows
 pip install -r requirements.txt
 ```
 Note: If a `requirements.txt` file is not present, please add the necessary dependencies or instructions for setting up your Python environment.
@@ -93,8 +96,19 @@ npm install
 
 From the `server` directory, run the main server file:
 ```bash 
-python main.py
+python manage.py migrate #Apply database mitigations
+python manage.py createsuperuser #Create a Superuser (Optional for Django Admin)
+python manage.py runserver #Run the Development Server
 ```
+
+### Environment Variables
+
+Create a .env file in the server directory and add the necessary environment variables. For example:
+```bash
+SECRET_KEY=your_secret_key
+DEBUG=True
+```
+
 ### Running the Client
 
 From the `client` directory, start the web application:
