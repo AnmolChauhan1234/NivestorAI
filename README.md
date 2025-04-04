@@ -29,11 +29,23 @@ Nivestor AI is tailored for new investors with limited capital (e.g., ₹2000), 
 
 ## Project Structure
 ```bash
-The repository is organized into two main directories:
-NivestorAI/
-├── client/       # Frontend code (JavaScript/React or similar)
-├── server/       # Backend code (Python APIs, AI modules)
-├── .gitignore    # Files and directories to ignore in version control
+project-root/
+├── client/                  # Frontend (if applicable)
+├── server/                  # Backend
+│   ├── .venv/               # Virtual environment
+│   ├── ai/                  # AI-related functionalities
+│   ├── analysis/            # Data analysis
+│   ├── market/              # Market-related features
+│   ├── notifications/       # Notification system
+│   ├── server/              # Core Django project files
+│   ├── trading/             # Trading functionalities
+│   ├── user_auth/           # Authentication module
+│   ├── watchlist/           # Watchlist module
+│   ├── manage.py            # Django project management
+│   ├── requirements.txt     # Project dependencies
+│   ├── .env                 # Environment variables
+│   ├── .gitignore           # Git ignore file
+
 ```
 
 This structure separates concerns, making it easier to manage the UI and backend logic independently.
